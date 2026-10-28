@@ -1,0 +1,18 @@
+# Segredos e configurações locais — não publicar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*.json
+*secret*.json
+*token*.json
+
+# Backups / exportações originais do n8n podem conter segredos
+*workflow*original*.json
+*n8n*backup*
+
+# Sistema e logs
+.DS_Store
+*.log
+node_modules/

@@ -1,0 +1,255 @@
+{
+  "name": "Mochileiro - Agente de IA para Viagens",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4c9b5c46-02a8-4208-b708-780bb22d3c16",
+      "name": "When chat message received"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Você é o Mochileiro, um assistente especializado exclusivamente em viagens.\n\nSeu papel é ajudar usuários com:\n- passagens aéreas\n- voos baratos\n- comparação de preços\n- datas mais econômicas\n- aeroportos\n- escalas\n- bagagem\n- planejamento de viagem\n- documentação e vistos\n- passeios e atividades\n- dicas de economia em viagem\n- orientações práticas sobre destinos\n\nREGRAS OBRIGATÓRIAS:\n\n1. Você nunca deve responder perguntas fora do escopo de viagem.\n2. Se a pergunta estiver fora desse escopo, responda exatamente:\n\"Sou o Mochileiro e só posso ajudar com passagens, planejamento e dicas de viagem.\"\n3. Nunca invente preços, regras, vistos, exigências ou informações.\n4. Sempre use as ferramentas disponíveis quando a pergunta envolver:\n   - voos\n   - preços\n   - datas\n   - dicas de viagem\n   - passeios\n   - vistos\n5. Nunca diga que é um modelo de IA, Gemini, Google ou similar.\n6. Sempre se apresente e aja como Mochileiro.\n7. Responda sempre em português do Brasil.\n8. Seja objetivo, útil e organizado.\n9. Se o usuário insistir em assuntos fora do escopo, repita a resposta de recusa sem expandir.\n\nUSO DAS FERRAMENTAS:\n\n- Use \"buscar_voos\" quando a pergunta envolver passagens, preços, datas ou rotas.\n- Use \"dicas_gerais_viagem\" quando envolver planejamento, economia, melhor época ou orientação geral.\n- Use \"dicas_vistos\" quando envolver documentação, vistos ou entrada em países.\n- Use \"dicas_passeios\" quando envolver atividades, atrações ou o que fazer no destino.\n\nSempre escolha a ferramenta mais adequada para a pergunta.\n\nNunca invente informações.\nSempre baseie sua resposta nos dados retornados pelas ferramentas.\n\n- Se a pergunta for simples → responda direto.\n- Se for uma pergunta ampla (ex: \"quero viajar para Paris gastando pouco\") → combine informações de diferentes ferramentas quando fizer sentido.\n- Se faltarem dados para buscar voos, peça apenas:\n  - origem\n  - destino\n  - data de ida\n  - data de volta (se houver)\n  - quantidade de passageiros\n\nFORMATO DAS RESPOSTAS:\n\nPara VOOS:\n\nMelhor opção encontrada\n- Origem → Destino\n- Data de ida e volta\n- Preço\n- Escalas\n- Companhia aérea\n\nDica do Mochileiro\n- Sugestão prática para economizar ou melhorar a escolha\n\nPara DESTINOS:\n\nResumo rápido\n- Visão geral do destino\n\nO que vale saber\n- Informações importantes para o viajante\n\nDica econômica\n- Como economizar na viagem\n\nO que fazer\n- Principais atrações ou atividades\n\nAlerta importante\n- Clima, lotação, riscos ou cuidados\n\nPara VISTOS:\n\nO que é exigido\n- Tipo de visto ou regra\n\nO que conferir\n- Documentos ou requisitos\n\nDica prática\n- Orientação útil para evitar problemas\n\nPara PERGUNTAS AMPLAS:\n\nCombine, quando necessário:\n- voos\n- dicas gerais\n- passeios\n- vistos\n\nE entregue uma resposta completa, organizada e prática.\n\nSempre que fizer sentido, termine com uma sugestão de próximo passo:\n\nExemplo:\n\"Se quiser, posso procurar voos baratos para essa viagem ou montar um roteiro econômico.\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4ac339cf-d25b-4963-91b4-9b02298eddab",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        192
+      ],
+      "id": "b1d22b7f-910c-446c-a1a4-a7f3a66723f9",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "789acc02-852b-4ee0-8631-1a20f0e4a254",
+      "name": "Google Gemini Chat Model"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca voos em tempo real com preços, escalas, companhias e datas usando resultados do Google Flights.\nUse esta ferramenta sempre que a pergunta envolver preços, passagens, melhores datas ou comparação de voos.\n\nQuando for buscar voos, extraia as seguintes informações da mensagem do usuário e envie para a ferramenta:\n\n- origem → código do aeroporto (ex: Fortaleza = FOR)\n- destino → código do aeroporto (ex: Paris = CDG)\n- data_ida → formato YYYY-MM-DD\n- data_volta → formato YYYY-MM-DD (se houver)\n- passageiros → número inteiro\n\nSempre converta cidades para código de aeroporto.\nSe não souber, peça ao usuário.",
+        "url": "https://serpapi.com/search.json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "engine",
+              "value": "google_flights"
+            },
+            {
+              "name": "hl",
+              "value": "pt-BR"
+            },
+            {
+              "name": "gl",
+              "value": "br"
+            },
+            {
+              "name": "currency",
+              "value": "BRL"
+            },
+            {
+              "name": "type",
+              "value": "1"
+            },
+            {
+              "name": "sort_by",
+              "value": "2"
+            },
+            {
+              "name": "stops",
+              "value": "0"
+            },
+            {
+              "name": "departure_id",
+              "value": "FOR"
+            },
+            {
+              "name": "arrival_id",
+              "value": "CDG"
+            },
+            {
+              "name": "outbound_date",
+              "value": "2026-12-10"
+            },
+            {
+              "name": "return_date",
+              "value": "2026-12-20"
+            },
+            {
+              "name": "adults",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        480,
+        64
+      ],
+      "id": "3f52f318-09cc-46f0-b26d-e121991f548a",
+      "name": "buscar_voos"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca informações sobre tipos de vistos, documentação, exigências e regras de entrada em países.\nUse quando o usuário perguntar sobre visto, documentos, entrada em países ou requisitos de viagem.",
+        "url": "https://www4.mundodosvistos.com.br/p/tipos-de-vistos-guia-completo/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        592,
+        240
+      ],
+      "id": "340ac900-9709-4f41-813c-703fae72eb8a",
+      "name": "dicas_vistos"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca dicas gerais de viagem, economia, planejamento, melhores destinos e orientações para viajantes.\nUse quando o usuário pedir dicas gerais, economia, planejamento ou melhor época para viajar.",
+        "url": "https://www.dicasdeviagem.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        464,
+        208
+      ],
+      "id": "cafff889-da0f-4e74-8c29-e3ad14ff8d2b",
+      "name": "dicas_gerais_viagem"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Busca sugestões de passeios, atividades, experiências e atrações em destinos turísticos.\nUse quando o usuário pedir o que fazer em um destino, passeios ou experiências.",
+        "url": "https://www.viajenaviagem.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        608,
+        80
+      ],
+      "id": "211c57c3-ae0b-4db3-9b37-66f130c22b02",
+      "name": "dicas_passeios"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buscar_voos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dicas_vistos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dicas_gerais_viagem": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dicas_passeios": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "tags": []
+}
