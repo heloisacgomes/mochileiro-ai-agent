@@ -50,7 +50,7 @@ flowchart TD
 
 1. Abra `mochileiro-workflow.json` para examinar os nós, parâmetros e conexões.
 2. Em uma instância do **n8n**, use a opção de importar um workflow de arquivo e selecione esse JSON.
-3. Reconfigure **suas próprias credenciais privadas** do Gemini e a autenticação necessária às requisições HTTP. A chave antiga da SerpAPI **não está incluída** no arquivo e deve ser invalidada.
+3. Reconfigure **suas próprias credenciais privadas** do Gemini e a autenticação necessária às requisições HTTP. As credenciais de acesso às APIs não estão incluídas no repositório. Para executar o workflow, é necessário configurar credenciais próprias no n8n.
 4. Antes de testar, revise os parâmetros de pesquisa de voos, que estão fixos no protótipo, e os endpoints de consulta.
 
 **Segurança:** não coloque chaves de API, tokens, identificadores sensíveis, exemplos com dados pessoais nem arquivos originais de exportação com credenciais neste repositório. Use o gerenciador de credenciais do n8n para autenticação.
