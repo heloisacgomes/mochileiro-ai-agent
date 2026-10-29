@@ -29,7 +29,19 @@ flowchart TD
     B --> G[dicas_gerais_viagem - fonte externa]
     B --> H[dicas_passeios - fonte externa]
 ```
+## Demonstração do Mochileiro
 
+### Fluxo desenvolvido no n8n
+
+Arquitetura do agente com Google Gemini, memória conversacional e ferramentas HTTP para consultas externas.
+
+![Workflow do Mochileiro no n8n](images/mochileiro-workflow.png)
+
+### Exemplo de interação com o agente
+
+Neste teste, o Mochileiro recebeu uma solicitação para organizar um roteiro econômico em Lisboa, incluindo atrações, transporte e dicas para economizar. A resposta foi gerada em ambiente de desenvolvimento.
+
+![Conversa com o Mochileiro](images/mochileiro-chat.png)
 ## O que foi implementado
 
 1. Entrada por chat, com o fluxo encaminhado ao nó **AI Agent**.
